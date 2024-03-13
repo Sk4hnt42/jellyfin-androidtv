@@ -50,6 +50,13 @@ import org.jellyfin.sdk.model.api.MediaStreamType;
 import org.jellyfin.sdk.model.api.PlayAccess;
 import org.koin.java.KoinJavaComponent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
 import java.util.List;
 
 import kotlin.Lazy;
