@@ -1542,4 +1542,56 @@ public class PlaybackController implements PlaybackControllerNotifiable {
         UNDEFINED,
         ERROR
     }
+
+    // Get Intro Timestamps
+            public void fetchIntroTimestamps(String itemId) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // URL of IntroSkipper API - (Private Jellyfin Server Hardcoded)
+                        URL url = new URL("https://vod.madigepola.de/Episode/" + itemId + "/IntroTimestamps");
+
+                        // APi Request
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+
+                        // Check HTTP Status Code Response
+                        int responseCode = conn.getResponseCode();
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            // Lesen Sie die Antwort
+                            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            String inputLine;
+                            StringBuffer response = new StringBuffer();
+
+                            while ((inputLine = in.readLine()) != null) {
+                                response.append(inputLine);
+                            }
+                            in.close();
+
+                            // Check Response an Parse JSON Information
+                            parseIntroTimestamps(response.toString());
+                        } else {
+                            System.out.println("Request failed or no Intro detected!");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        // Analyze JSON Response
+        public void parseIntroTimestamps(String jsonResponse) {
+            try {
+                JSONObject jsonObject = new JSONObject(jsonResponse);
+
+               // Extract Intro Start & End Timestamps and save in integer value 
+                int introStart = jsonObject.getInt("introStart");
+                int introEnd = jsonObject.getInt("introEnd");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 }
